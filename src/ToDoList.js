@@ -4,14 +4,24 @@ import AddNewItemForm from "./AddNewItemForm";
 import TodoListFooter from "./TodoListFooter";
 import TodoListTasks from "./TodoListTasks";
 import TodoListTitle from "./TodoListTitle";
+import {connect} from "react-redux";
+import {
+    ADD_TASK,
+    addTask,
+    addTaskAC,
+    CHANGE_FILTER,
+    CHANGE_STATUS,
+    CHANGE_TASK, changeFilterAC, changeStatusAC,
+    changeTaskAC,
+    DELETE_TASK, deleteTaskAC
+} from "./reducer";
 
 class ToDoList extends React.Component {
-
-    state = {
+    /*state = {
         tasks: [],
         filterVal: "All",
         newTaskId: 0
-    }
+    };*/
 
     componentDidMount(){
         this.restoreState();
@@ -22,7 +32,7 @@ class ToDoList extends React.Component {
         let stateAsString = JSON.stringify(this.state);
         //сохраняем строку в localStorage под ключом our-state
         localStorage.setItem('our-state-'+this.props.id, stateAsString);
-    }
+    };
 
     restoreState=()=>{
         let state = {
@@ -39,71 +49,127 @@ class ToDoList extends React.Component {
         }
 
         this.setState(state, ()=> {this.saveState(); });
-    }
+    };
 
     addTask = (newText) => {
         let newTask = {
-            id: this.state.newTaskId,
+            id: this.props.tasks.length,
             title: newText,
             isDone: false,
             priority: 'Low'
         };
-        this.state.newTaskId++;
-        let newTasks = [...this.state.tasks, newTask];
+       /* let newTasks = [...this.state.tasks, newTask];
         this.setState({
             tasks: newTasks
         }, ()=> {this.saveState(); });
     };
 
-    changeFilter = (newFilterValue) => {
+      changeFilter = (newFilterValue) => {
         this.setState({
             filterVal: newFilterValue
-        }, ()=> {this.saveState(); });
+        }, ()=> {this.saveState(); });*/
+        this.props.addTask(this.props.id, newTask);
     };
 
-    changeStatus = (taskID, isDone) =>{
-        this.changeTask(taskID, {isDone: isDone})
+    changeFilter = (todoId,newFilterValue) => {
+        this.props.changeFilter(todoId, newFilterValue);
+     };
+
+    changeStatus = (todolistId, taskID, isDone) =>{
+        this.props.changeStatus(todolistId ,taskID, isDone)
     };
 
-    changeTask = (taskId, obj) =>{
-        let newTask = this.state.tasks.map(t => {
-            if(t.id != taskId){
-                return t;
-            }
-            else{
-                return {...t, ...obj}
-            }
-        });
+    changeTask = (todolistId, taskId, obj) =>{
+        this.props.changeTask(todolistId, taskId, obj);
+    };
 
-        this.setState({tasks: newTask}, ()=> {this.saveState(); })
-    }
+    changeTitle = (todolistId ,taskId, title) => {
+        this.changeTask(todolistId, taskId, {title: title})
+    };
 
-    changeTitle = (taskId, title) => {
-        this.changeTask(taskId, {title: title})
-    }
+    deleteTodolist = () => {
+        this.props.deleteList(this.props.id);
+    };
+
 
     render = () => {
-        let filteredTasks = this.state.tasks.filter(t => {
-            switch (this.state.filterVal) {
+        let filteredTasks = this.props.tasks.filter(t => {
+            switch (this.props.filter) {
                 case "All": return true;
                 case "Completed": return t.isDone;
                 case "Active": return !t.isDone;
                 default: return true;
-            }})
+            }});
         return (
             <div className="App">
                 <div className="todoList">
-                    <div  className='todoList-header'>
+                    <div className='todoList-header'>
                         <TodoListTitle title={this.props.title}/>
-                        <AddNewItemForm addItem={this.addTask}/>
+                        <button className='deleteBtn' onClick={this.deleteTodolist}>X</button>
                     </div>
-                   <TodoListTasks changeStatus={this.changeStatus} changeTitle={this.changeTitle} task={filteredTasks} />
-                    <TodoListFooter changeFilter = {this.changeFilter} filterValue={this.state.filterVal}/>
+                    <AddNewItemForm addItem={this.addTask}/>
+                   <TodoListTasks changeStatus={this.changeStatus} todoId={this.props.id}
+                                  changeTitle={this.changeTitle} task={filteredTasks} deleteTask={this.props.deleteTask} />
+
+                    <TodoListFooter changeFilter={this.changeFilter} filterValue={this.props.filter}
+                                    todoId={this.props.id}/>
                 </div>
             </div>
         );
     }
 }
 
-export default ToDoList;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addTask: (todolistId, newTask) => {
+            /*const action = {
+                type: ADD_TASK,
+                newTask,
+                todolistId,
+            };*/
+            const action = addTaskAC(todolistId, newTask)
+            dispatch(action)
+        },
+        deleteTask: (todolistId, taskId) =>{
+            /*const action = {
+                type: DELETE_TASK,
+                todolistId,
+                taskId
+            };*/
+            const action = deleteTaskAC(todolistId, taskId);
+            dispatch(action)
+        },
+        changeTask: (todolistId, taskId, newTask) => {
+            /*const action = {
+                type: CHANGE_TASK,
+                todolistId,
+                taskId,
+                newTask,
+            };*/
+            const action = changeTaskAC(todolistId, taskId, newTask);
+            dispatch(action);
+        },
+        changeFilter: (todolistId, filterValue) => {
+            /*const action = {
+                type: CHANGE_FILTER,
+                todolistId,
+                newFilterValue: filterValue
+            };*/
+            const action = changeFilterAC(todolistId, filterValue);
+            dispatch(action);
+        },
+        changeStatus: (todolistId, taskId, isDone) => {
+            /*const action = {
+                type: CHANGE_STATUS,
+                todolistId,
+                taskId,
+                isDone
+            };*/
+            const action = changeStatusAC(todolistId, taskId, isDone);
+            dispatch(action);
+        }
+    }
+};
+
+export default connect(null, mapDispatchToProps)(ToDoList);
 

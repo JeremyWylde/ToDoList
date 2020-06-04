@@ -4,30 +4,31 @@ class TodoListFooter extends React.Component {
 
     state = {
         isHidden: false
-    }
+    };
 
     hey = () => {
         alert('hey');
-    }
+    };
 
     onAllFilterClick = () => {
-        this.props.changeFilter("All")
-    }
+        this.props.changeFilter(this.props.todoId ,"All")
+    };
 
     onCompletedFilterClick = () => {
-        this.props.changeFilter("Completed")
-    }
+        this.props.changeFilter(this.props.todoId ,"Completed")
+    };
 
     onActiveFilterClick = () => {
-        this.props.changeFilter("Active")
-    }
+        this.props.changeFilter(this.props.todoId ,"Active")
+    };
 
     onShowFiltersClick = () => {
         this.setState({isHidden: true})
-    }
+    };
+
     onHideFiltersClick = () => {
         this.setState({isHidden: false})
-    }
+    };
 
     render = (props) => {
         let classForAll = this.props.filterValue === "All" ? "filter-active" : "";

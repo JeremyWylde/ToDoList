@@ -28,3 +28,17 @@
   opacity: 0.5;
 }
 
+.todoList-header{
+  display: flex;
+  margin-right: 20px;
+  align-items: center;
+}
+
+.deleteBtn{
+  height: 25px;
+  width: 25px;
+}
+
+.task{
+  display: flex;
+}
