@@ -47,14 +47,14 @@ class App extends React.Component {
     render = () => {
         const todoList = this.props.todolists.map(tl => <ToDoList id={tl.id}
            title={tl.title} tasks={tl.tasks} deleteList={this.deleteToDoList}
-        filter={tl.filter}/>)
+        filter={tl.filter}/>);
 
         return (
             <div>
                 <div>
                     <AddNewItemForm addItem={this.addToDoList}/>
                 </div>
-                <div className='App'>
+                <div className='main-block'>
                     {todoList}
                 </div>
             </div>
@@ -72,18 +72,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         addTodolist: (newTodolist) => {
-            /*const action = {
-                type: ADD_TODOLIST,
-                newTodolist
-            };*/
-            const action = addTodolistAC(action);
+            const action = addTodolistAC(newTodolist);
             dispatch(action)
         },
         deleteTodolist: (todolistId) =>{
-           /* const action = {
-                type: DELETE_TODOLIST,
-                todolistId
-            };*/
            const action = deleteTodolistAC(todolistId);
             dispatch(action)
         }

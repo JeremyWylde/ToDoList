@@ -102,14 +102,15 @@ class ToDoList extends React.Component {
             }});
         return (
             <div className="App">
-                <div className="todoList">
-                    <div className='todoList-header'>
+                <div className="message">
+                    <div className='message-header'>
                         <TodoListTitle title={this.props.title}/>
-                        <button className='deleteBtn' onClick={this.deleteTodolist}>X</button>
+                        <button className='delete' onClick={this.deleteTodolist}>X</button>
                     </div>
                     <AddNewItemForm addItem={this.addTask}/>
                    <TodoListTasks changeStatus={this.changeStatus} todoId={this.props.id}
-                                  changeTitle={this.changeTitle} task={filteredTasks} deleteTask={this.props.deleteTask} />
+                                  changeTitle={this.changeTitle} task={filteredTasks}
+                                  deleteTask={this.props.deleteTask} />
 
                     <TodoListFooter changeFilter={this.changeFilter} filterValue={this.props.filter}
                                     todoId={this.props.id}/>

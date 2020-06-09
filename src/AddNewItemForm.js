@@ -39,14 +39,18 @@ class AddNewItemForm extends React.Component {
 
 
     render = () => {
-        let classForBorder = this.state.error === true ? 'error': "";
+        let classForBorder = this.state.error === true ? 'input error': "input";
         return (
 
-                <div className="todoList-newTaskForm">
+                <div className="field has-addons">
+                    <div className='control'>
                     <input className={classForBorder} type="text" placeholder="New item name"
                            onChange={this.onChangeInput} onKeyPress={this.onEnterPress}
                            value={this.state.tittle}/>
-                    <button onClick={this.onAddItemClick}>Add</button>
+                    </div>
+                    <div className='control'>
+                    <button class='button is-primary ' onClick={this.onAddItemClick}>Add</button>
+                    </div>
                 </div>
 
         );

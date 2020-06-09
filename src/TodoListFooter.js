@@ -31,19 +31,19 @@ class TodoListFooter extends React.Component {
     };
 
     render = (props) => {
-        let classForAll = this.props.filterValue === "All" ? "filter-active" : "";
-        let classForCompleted = this.props.filterValue === "Completed" ? "filter-active" : "";
-        let classForActive = this.props.filterValue === "Active" ? "filter-active" : "";
+        let classForAll = this.props.filterValue === "All" ? "is-active" : "";
+        let classForCompleted = this.props.filterValue === "Completed" ? "is-active" : "";
+        let classForActive = this.props.filterValue === "Active" ? "is-active" : "";
 
         return (
-            <div className="todoList-footer">
-                { !this.state.isHidden && <div>
-                <button onClick={this.onAllFilterClick} className={classForAll}>All</button>
-                <button onClick={this.onCompletedFilterClick} className={classForCompleted}>Completed</button>
-                <button onClick={this.onActiveFilterClick}  className={classForActive}>Active</button>
-                </div>}
-                {!this.state.isHidden && <span onClick={this.onShowFiltersClick}>hide</span> }
-                {this.state.isHidden && <span onClick={this.onHideFiltersClick}>show</span>}
+            <div className="tabs is-centered">
+                { !this.state.isHidden && <ul>
+                <li onClick={this.onAllFilterClick} className={classForAll}><a>All</a></li>
+                <li onClick={this.onCompletedFilterClick} className={classForCompleted}><a>Completed</a></li>
+                <li onClick={this.onActiveFilterClick}  className={classForActive}><a>Active</a></li>
+                </ul>}
+               {/* {!this.state.isHidden && <span onClick={this.onShowFiltersClick}>hide</span> }
+                {this.state.isHidden && <span onClick={this.onHideFiltersClick}>show</span>}*/}
             </div>
         );
     }
