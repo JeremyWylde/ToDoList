@@ -1,5 +1,5 @@
 .App {
-
+    width: 300px
 }
 
 .main-block{
@@ -10,20 +10,14 @@
     flex-wrap: wrap;
 }
 
-.todoList {
-  margin: 0 auto;
-}
-
-.todoList > div {
-  padding: 10px;
+@media screen and (max-width: 950px) {
+    .App {
+        margin: 50px auto;
+    }
 }
 
 .panel-block.is-active{
   opacity: 0.5;
-}
-
-.filter-active{
-  background-color: blue;
 }
 
 .error {
@@ -31,8 +25,9 @@
 }
 
 .panel-block {
-  width: 260px;
+  width: 100%;
   display: flex;
+    font-size: 24px;
 }
 
 

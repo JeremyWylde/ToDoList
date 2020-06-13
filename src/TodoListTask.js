@@ -1,17 +1,28 @@
 import React from 'react';
+import {api} from "./Api/API";
 
 class TodoListTask extends React.Component {
 
     state = {
-        editMode: false
+        editMode: false,
+        title: this.props.task.title,
     };
 
     onIsDoneChanged = (e) => {
-        this.props.changeStatus(this.props.todoId, this.props.task.id, e.currentTarget.checked);
+        let newStatus;
+        if(e.currentTarget.checked === true)
+            newStatus = 2;
+        else
+            newStatus = 0;
+
+        api.updateTaskStatus(this.props.todoId, this.props.task.id, this.props.task.title, newStatus)
+            .then(res=>{
+                this.props.changeStatus(res.data.data.item.todoListId, res.data.data.item.id, res.data.data.item.status);
+            });
     };
 
     onTitleChanged = (e) => {
-        this.props.changeTitle(this.props.todoId ,this.props.task.id, e.currentTarget.value)
+        this.setState({title: e.currentTarget.value});
     };
 
     activateEditMode = () =>{
@@ -19,25 +30,39 @@ class TodoListTask extends React.Component {
     };
 
     deactivateEditMode = () =>{
-        this.setState({editMode: false})
+         api.updateTaskTitle(this.props.todoId, this.props.task.id, this.state.title)
+           .then(res=>{
+               this.props.changeTitle(res.data.data.item.todoListId , res.data.data.item.id, res.data.data.item.title);
+               this.setState({editMode: false});
+           });
     };
 
     deleteTask = () => {
-        this.props.deleteTask(this.props.todoId, this.props.task.id)
+        api.deleteTask(this.props.todoId, this.props.task.id)
+            .then(res=>{
+                this.props.deleteTask(this.props.todoId, this.props.task.id)
+            });
+
     };
 
     render = () => {
-       // let isTaskDone = this.props.task.isDone === true ? "todoList-task-done": "todoList-task";
         let class1 = 'panel-block';
         let class2 = 'is-active';
-        let isTaskDone = `${class1} ${this.props.task.isDone && class2}`;
+        let status;
+        if(this.props.task.status === 2)
+            status = true;
+        else
+            status = false;
+
+        let isTaskDone = `${class1} ${status && class2}`;
 
         return (
             <div className='panel-block'>
             <a className={isTaskDone}>
-                <input type='checkbox' checked={this.props.task.isDone} onChange={this.onIsDoneChanged}/>
+                <input type='checkbox' checked={status} onChange={this.onIsDoneChanged}/>
                 {this.state.editMode
-                ? <input onBlur={this.deactivateEditMode} onChange={this.onTitleChanged} autoFocus={true} value={this.props.task.title}/>
+                ? <input onBlur={this.deactivateEditMode} onChange={this.onTitleChanged} autoFocus={true}
+                         value={this.state.title}/>
                 : <div className='task-text' onClick={this.activateEditMode}> {this.props.task.title}</div>}
             </a>
             <button className='delete' onClick={this.deleteTask}>X</button>

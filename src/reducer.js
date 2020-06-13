@@ -5,11 +5,14 @@ export const DELETE_TASK = 'DELETE_TASK';
 export const CHANGE_TASK = 'CHANGE_TASK';
 export const CHANGE_FILTER = 'CHANGE_FILTER';
 export const CHANGE_STATUS = 'CHANGE_STATUS';
+export const SET_TODOLIST = 'SET_TODOLIST';
+export const SET_TASKS = 'SET_TASKS';
+export const CHANGE_TODOLIST_TITLE = 'CHANGE_TODOLIST_TITLE';
 
 
 const initialState = {
     todolists: [
-        {
+        /*{
             id: 0, title: "Js", tasks: [
                 {id: 0, title: 'css', isDone: false, priority: 'low'},
                 {id: 1, title: 'asdfg', isDone: true, priority: 'mid'},],
@@ -28,14 +31,29 @@ const initialState = {
                 {id: 1, title: 'cnnnss', isDone: true, priority: 'low'},
             ],
             filter: 'Active'
-        }
+        }*/
     ],
     newTodoLisId: 2,
-    // filterVal: "All",
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
+        case SET_TODOLIST:
+            return {
+                ...state,
+                todolists: action.todolists.map(tl=>({...tl,tasks: []}))
+            };
+        case SET_TASKS:
+            return {
+                ...state,
+                todolists: state.todolists.map(tl=>{
+                    if(tl.id !== action.todolistsId)
+                        return tl;
+                    else{
+                        return {...tl, tasks: action.allTasks}
+                    }
+                })
+            };
         case ADD_TODOLIST:
             return {
                 ...state,
@@ -117,10 +135,22 @@ const reducer = (state = initialState, action) => {
                                     return task
                                 } else {
                                     return {
-                                        ...task, isDone: action.isDone
+                                        ...task, status: action.isDone
                                     }
                                 }
                             })
+                        }
+                    }
+                })
+            };
+        case CHANGE_TODOLIST_TITLE:
+            return {
+                ...state, todolists: state.todolists.map(todo => {
+                    if(todo.id !== action.todoListId){
+                        return todo
+                    } else{
+                        return{
+                            ...todo, title: action.title
                         }
                     }
                 })
@@ -169,7 +199,26 @@ export const deleteTodolistAC = (todolistId) => {
       todolistId
   }
 };
-
+export const setToDoListsAC = (todolists) => {
+  return {
+      type: SET_TODOLIST,
+      todolists
+  }
+};
+export const setTasksAC = (allTasks,todolistsId) => {
+  return {
+      type: SET_TASKS,
+      allTasks,
+      todolistsId,
+  }
+};
+export const changeToDoListTitleAC = (todoListId, title) => {
+  return {
+      type: CHANGE_TODOLIST_TITLE,
+      todoListId,
+      title
+  }
+};
 
 
 export default reducer;

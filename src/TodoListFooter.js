@@ -6,20 +6,16 @@ class TodoListFooter extends React.Component {
         isHidden: false
     };
 
-    hey = () => {
-        alert('hey');
-    };
-
     onAllFilterClick = () => {
         this.props.changeFilter(this.props.todoId ,"All")
     };
 
     onCompletedFilterClick = () => {
-        this.props.changeFilter(this.props.todoId ,"Completed")
+        this.props.changeFilter(this.props.todoId ,"2")
     };
 
     onActiveFilterClick = () => {
-        this.props.changeFilter(this.props.todoId ,"Active")
+        this.props.changeFilter(this.props.todoId ,"0")
     };
 
     onShowFiltersClick = () => {
@@ -32,8 +28,8 @@ class TodoListFooter extends React.Component {
 
     render = (props) => {
         let classForAll = this.props.filterValue === "All" ? "is-active" : "";
-        let classForCompleted = this.props.filterValue === "Completed" ? "is-active" : "";
-        let classForActive = this.props.filterValue === "Active" ? "is-active" : "";
+        let classForCompleted = this.props.filterValue === "2" ? "is-active" : "";
+        let classForActive = this.props.filterValue === "0" ? "is-active" : "";
 
         return (
             <div className="tabs is-centered">

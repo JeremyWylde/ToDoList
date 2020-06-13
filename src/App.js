@@ -3,7 +3,9 @@ import './App.css';
 import ToDoList from "./ToDoList";
 import AddNewItemForm from "./AddNewItemForm";
 import {connect} from "react-redux";
-import {ADD_TODOLIST, addTodolistAC, DELETE_TODOLIST, deleteTodolistAC} from "./reducer";
+import {addTodolistAC, changeToDoListTitleAC, deleteTodolistAC, setToDoListsAC} from "./reducer";
+
+import {api} from "./Api/API";
 
 
 class App extends React.Component {
@@ -12,32 +14,19 @@ class App extends React.Component {
         this.restoreState();
     }
 
-    saveState = () =>{
-        let stateAsString = JSON.stringify(this.state);
-        localStorage.setItem('stateForToDoList', stateAsString);
-    };
-
-    restoreState=()=>{
-        let state = {
-            todolist: [],
-        };
-
-        let stateAsString = localStorage.getItem('stateForToDoList')
-
-        if(stateAsString != null){
-            state = JSON.parse(stateAsString);
-        }
-
-        this.setState(state, ()=> {this.saveState(); });
+    restoreState = () => {
+        api.getToDoLists()
+            .then(res => {
+                this.props.setToDoLists(res.data);
+            })
     };
 
     addToDoList = (title) =>{
-        let newTodoList = {
-            id: this.props.newTodoLisId + 1,
-            title: title,
-            tasks: []
-        };
-        this.props.addTodolist(newTodoList);
+        api.addToDoList(title)
+            .then(res=>{
+                let todoList = res.data.data.item;
+                this.props.addTodolist(todoList);
+            })
     };
 
     deleteToDoList = (todolistID) => {
@@ -47,7 +36,7 @@ class App extends React.Component {
     render = () => {
         const todoList = this.props.todolists.map(tl => <ToDoList id={tl.id}
            title={tl.title} tasks={tl.tasks} deleteList={this.deleteToDoList}
-        filter={tl.filter}/>);
+        filter={tl.filter} changeToDoListTitle={this.props.changeToDoListTitle}/>);
 
         return (
             <div>
@@ -78,6 +67,14 @@ const mapDispatchToProps = (dispatch) => {
         deleteTodolist: (todolistId) =>{
            const action = deleteTodolistAC(todolistId);
             dispatch(action)
+        },
+        setToDoLists: (todolists) =>{
+            const action = setToDoListsAC(todolists);
+            dispatch(action);
+        },
+        changeToDoListTitle: (todoListId, title) => {
+            const action = changeToDoListTitleAC(todoListId, title)
+            dispatch(action);
         }
     }
 };
